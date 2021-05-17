@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Brand = require('../models/Brand');
+const BrandTag = require('../models/BrandTag');
 
 // GET ALL
 router.get('/', async (req,res) => {
@@ -39,6 +40,9 @@ router.post('/', async (req,res) => {
   const existing2 = await Brand.findOne({ brand_domain: req.body.brand_domain }).exec();
   if(existing2) res.json({ message: 'Brand domain exists' }); 
 
+  const existing3 = await BrandTag.findOne({ brand_tag: req.body.brand_name }).exec();
+  if(existing3) res.json({ message: 'Brand tag exists' }); 
+
   const obj = new Brand({
     brand_name: req.body.brand_name,
     brand_domain: req.body.brand_domain,
@@ -47,6 +51,13 @@ router.post('/', async (req,res) => {
 
   try {
     const data = await obj.save();
+
+    const objTag = new BrandTag({
+      brand_tag: req.body.brand_name,
+      brand: data._id
+    });  
+    const dataTag = await objTag.save();
+
     res.json(data);
   } catch (err) {
     res.json({ message: err });

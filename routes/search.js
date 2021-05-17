@@ -4,7 +4,13 @@ const router = express.Router();
 const BrandTag = require('../models/BrandTag');
 const Brand = require('../models/Brand');
 
+
+
 // GET ONE
+/* Known issues:
+** 1. PAYPAL *TWILIO 4029357733 US, showing paypal, shoudl be twilio
+** 2. Google Adwords NAVI MUMABI IN is showing google, should be google ads
+*/
 router.get('/', async (req,res) => {
 
   const q = req.query.q.toLowerCase();
@@ -25,17 +31,18 @@ router.get('/', async (req,res) => {
       });
     }
     
-    // const brand = await BrandTag
-    //               .findById(filteredData[0]._id)
-    //               .populate('brand brand_category');
-    // res.json(brand);
-
-    const brand = await Brand
+    let brand = await Brand
                   .findById(filteredData[0].brand)
                   .select('brand_name brand_domain brand_logo -_id');
+
+    let brandTags = await BrandTag
+                  .find({ brand: filteredData[0].brand })
+                  .select('brand_tag');
+
     res.json({
       status: true,
-      data: brand
+      data: brand,
+      tags: brandTags
     });
 
   } catch (err) {
@@ -43,6 +50,7 @@ router.get('/', async (req,res) => {
   }
 
 });
+
 
 
 // GET MULTIPLE
@@ -71,35 +79,8 @@ router.post('/multiple', async (req,res) => {
     res.json({ message: err });
   }
 
-
-
-  // try {
-  //   const data = await BrandTag.find();
-
-    // let finalResponse = request.map(q => {    
-    
-    //   let filteredData = data.filter(obj => {
-    //     if(q.indexOf(obj.brand_tag.toLowerCase()) !== -1) {
-    //       return obj;
-    //     }
-    //   });
-
-    //   if(filteredData.length < 1) return {};
-      
-    //   let brand = await BrandTag
-    //                 .findById(filteredData[0]._id)
-    //                 .populate('brand brand_category');
-    //   return brand;
-
-    // });
-
-    // res.json(finalResponse);
-  //   res.json(data);
-
-  // } catch (err) {
-  //   res.json({ message: err });
-  // }
-
 });
+
+
 
 module.exports = router;
