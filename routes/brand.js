@@ -52,12 +52,21 @@ router.post('/', async (req,res) => {
   try {
     const data = await obj.save();
 
-    const objTag = new BrandTag({
-      brand_tag: req.body.brand_name,
-      brand: data._id
-    });  
-    const dataTag = await objTag.save();
+    // add all tags
+    // not checking if tag insert is failing
+    req.body.tags.push(req.body.brand_name);
+    req.body.tags = req.body.tags.map(name => name.toLowerCase());
+    const tags = [...new Set(req.body.tags)];
 
+    const tagsReq = tags.map(obj => {
+      return {
+        brand_tag: obj,
+        brand: data._id
+      };
+    });
+
+    BrandTag.insertMany(tagsReq);
+    
     res.json(data);
   } catch (err) {
     res.json({ message: err });
