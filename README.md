@@ -12,7 +12,8 @@ request
 `GET https://api.brandsome.io/search?q=<transaction details>`
 
 response (success)
-```{
+```
+{
     "status": true,
     "data": {
         "brand_name": "Spotify",
@@ -23,7 +24,8 @@ response (success)
 ```
 
 response (failure)
-```{
+```
+{
     "status": false,
     "message": "Brand not found"
 }
