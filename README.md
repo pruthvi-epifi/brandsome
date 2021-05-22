@@ -1,6 +1,6 @@
 # brandsome.io
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.7.
+identify a merchant's brand name & logo from any transaction description. custom built for fintech startups & banks which deals in credit cards, banking & payment gateway‍.
 
 ## tech
 
