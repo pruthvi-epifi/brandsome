@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const BrandTag = require('../models/BrandTag');
 const Brand = require('../models/Brand');
+const Log = require('../models/Log');
 
 
 // COUNT No. of Brands & Tags in system currently
@@ -33,6 +34,7 @@ router.get('/', async (req,res) => {
   try {
     const data = await BrandTag.find();
     
+    // ToDo: search algo improvement required
     const filteredData = data.filter(obj => {
       if(q.indexOf(obj.brand_tag.toLowerCase()) !== -1) {
         return obj;
@@ -40,6 +42,13 @@ router.get('/', async (req,res) => {
     });
 
     if(filteredData.length < 1) {
+      
+      const log = new Log({
+        req: q,
+        status: 'miss'
+      });
+      log.save();
+
       res.json({
         status: false,
         message: 'Brand not found'
@@ -52,7 +61,14 @@ router.get('/', async (req,res) => {
     
     response.data = await Brand
                   .findById(filteredData[0].brand)
-                  .select('brand_name brand_domain brand_logo -_id');
+                  .select('brand_name brand_domain brand_logo -_id'); // TODO -_id
+
+    const log = new Log({
+      req: q,
+      res: filteredData[0].brand,
+      status: 'hit'
+    });
+    log.save();                  
 
     if(req.query.tags == 1) {            
       const tags = await BrandTag

@@ -14,11 +14,13 @@ const brandRoutes = require('./routes/brand');
 const brandCategoryRoutes = require('./routes/brand_category');
 const brandTagRoutes = require('./routes/brand_tag');
 const searchRoutes = require('./routes/search');
+const logRoutes = require('./routes/log');
 
 app.use('/brands', brandRoutes);
 app.use('/brand_categories', brandCategoryRoutes);
 app.use('/brand_tags', brandTagRoutes);
 app.use('/search', searchRoutes);
+app.use('/logs', logRoutes);
 
 // Routes
 app.get('/', (req, res) => {
